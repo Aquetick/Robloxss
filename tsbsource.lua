@@ -36,7 +36,9 @@ workspace:SetAttribute("Limited", c)
 
 local k = game.Players.LocalPlayer
 
+
 local l = k.PlayerGui.Emotes.ImageLabel.Limited.List
+
 
 local layout = l:FindFirstChildOfClass("UIListLayout")
 if not layout then
@@ -45,7 +47,7 @@ if not layout then
 end
 
 layout.FillDirection = Enum.FillDirection.Horizontal 
-layout.HorizontalAlignment = Enum.HorizontalAlignment.Center -
+layout.HorizontalAlignment = Enum.HorizontalAlignment.Center 
 layout.VerticalAlignment = Enum.VerticalAlignment.Center 
 layout.Padding = UDim.new(0, 10) 
 
