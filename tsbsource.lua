@@ -36,32 +36,30 @@ workspace:SetAttribute("Limited", c)
 
 local k = game.Players.LocalPlayer
 
--- Обеспечиваем настройку расположения эмоций в линию (горизонтально)
 local l = k.PlayerGui.Emotes.ImageLabel.Limited.List
 
--- Настраиваем UIListLayout для расположения элементов в линию
 local layout = l:FindFirstChildOfClass("UIListLayout")
 if not layout then
     layout = Instance.new("UIListLayout")
     layout.Parent = l
 end
 
-layout.FillDirection = Enum.FillDirection.Horizontal -- Расположить по горизонтали
-layout.HorizontalAlignment = Enum.HorizontalAlignment.Center -- по желанию, центрировать по горизонтали
-layout.VerticalAlignment = Enum.VerticalAlignment.Center -- по желанию, центрировать по вертикали
-layout.Padding = UDim.new(0, 10) -- отступ между кнопками (по желанию)
+layout.FillDirection = Enum.FillDirection.Horizontal 
+layout.HorizontalAlignment = Enum.HorizontalAlignment.Center -
+layout.VerticalAlignment = Enum.VerticalAlignment.Center 
+layout.Padding = UDim.new(0, 10) 
 
--- Добавляем UIPadding для смещения элементов чуть правее и выше внутри контейнера
+
 local padding = l:FindFirstChildOfClass("UIPadding")
 if not padding then
     padding = Instance.new("UIPadding")
     padding.Parent = l
 end
 
-padding.PaddingLeft = UDim.new(0, 20) -- смещение вправо (например, 20 пикселей)
-padding.PaddingTop = UDim.new(0, -720) -- поднять элементы еще выше (на 120 пикселей)
+padding.PaddingLeft = UDim.new(0, 20) 
+padding.PaddingTop = UDim.new(0, -720) 
 
--- Обработка кликов по эмоциям для отправки подарка или другого действия
+
 for e, m in ipairs(l:GetChildren()) do
     if m:IsA("ImageButton") then
         m.MouseButton1Click:Connect(function()
