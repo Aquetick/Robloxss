@@ -2,7 +2,6 @@ local Player = game:GetService("Players").LocalPlayer
 local UIS = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 
--- Настройки
 local teleportKey = Enum.KeyCode.L
 local teleportHeight = 50
 local maxHeight = 350
@@ -10,7 +9,7 @@ local toggleKey = Enum.KeyCode.Insert
 local guiVisible = true
 local scriptActive = true
 
--- Создание GUI
+
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "AdvancedTeleportGUI"
 screenGui.Parent = game:GetService("CoreGui")
@@ -24,7 +23,6 @@ frame.Active = true
 frame.Draggable = true
 frame.Parent = screenGui
 
--- Заголовок (для перемещения)
 local titleBar = Instance.new("Frame")
 titleBar.Size = UDim2.new(1, 0, 0, 25)
 titleBar.Position = UDim2.new(0, 0, 0, 0)
@@ -43,7 +41,6 @@ title.TextSize = 18
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = titleBar
 
--- Кнопки управления (свернуть/закрыть)
 local closeButton = Instance.new("TextButton")
 closeButton.Size = UDim2.new(0, 20, 0, 20)
 closeButton.Position = UDim2.new(1, -25, 0, 2)
@@ -66,7 +63,6 @@ minimizeButton.Font = Enum.Font.SourceSansBold
 minimizeButton.TextSize = 18
 minimizeButton.Parent = titleBar
 
--- Основной контент
 local content = Instance.new("Frame")
 content.Size = UDim2.new(1, 0, 1, -25)
 content.Position = UDim2.new(0, 0, 0, 25)
@@ -127,7 +123,6 @@ changeKeyButton.Font = Enum.Font.SourceSans
 changeKeyButton.TextSize = 16
 changeKeyButton.Parent = content
 
--- Функции
 local function updateHeight(value)
     teleportHeight = math.floor(value * maxHeight) + 1
     heightLabel.Text = "Высота: " .. teleportHeight
@@ -165,14 +160,12 @@ local function toggleGUI(visible)
     frame.Size = visible and UDim2.new(0, 280, 0, 200) or UDim2.new(0, 280, 0, 25)
 end
 
--- Обработчики событий
 local teleportConnection
 local keyChangeConnection
 
 local function activateScript()
     if not scriptActive then return end
     
-    -- Подключение телепортации
     teleportConnection = UIS.InputBegan:Connect(function(input, gameProcessed)
         if not scriptActive then return end
         if input.KeyCode == teleportKey and not gameProcessed then
@@ -223,7 +216,6 @@ changeKeyButton.MouseButton1Click:Connect(function()
     end)
 end)
 
--- Инициализация
 connectSliderEvents()
 updateHeight(teleportHeight/maxHeight)
 activateScript()
