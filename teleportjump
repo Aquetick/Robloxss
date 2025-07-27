@@ -1,0 +1,229 @@
+local Player = game:GetService("Players").LocalPlayer
+local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+-- Настройки
+local teleportKey = Enum.KeyCode.L
+local teleportHeight = 50
+local maxHeight = 350
+local toggleKey = Enum.KeyCode.Insert
+local guiVisible = true
+local scriptActive = true
+
+-- Создание GUI
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "AdvancedTeleportGUI"
+screenGui.Parent = game:GetService("CoreGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 280, 0, 200)
+frame.Position = UDim2.new(0.3, 0, 0.3, 0)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+frame.Parent = screenGui
+
+-- Заголовок (для перемещения)
+local titleBar = Instance.new("Frame")
+titleBar.Size = UDim2.new(1, 0, 0, 25)
+titleBar.Position = UDim2.new(0, 0, 0, 0)
+titleBar.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+titleBar.BorderSizePixel = 0
+titleBar.Parent = frame
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -50, 1, 0)
+title.Position = UDim2.new(0, 5, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "Телепорт v2.1"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.SourceSansBold
+title.TextSize = 18
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = titleBar
+
+-- Кнопки управления (свернуть/закрыть)
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 20, 0, 20)
+closeButton.Position = UDim2.new(1, -25, 0, 2)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
+closeButton.BorderSizePixel = 0
+closeButton.Text = "×"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.Font = Enum.Font.SourceSansBold
+closeButton.TextSize = 18
+closeButton.Parent = titleBar
+
+local minimizeButton = Instance.new("TextButton")
+minimizeButton.Size = UDim2.new(0, 20, 0, 20)
+minimizeButton.Position = UDim2.new(1, -50, 0, 2)
+minimizeButton.BackgroundColor3 = Color3.fromRGB(60, 120, 255)
+minimizeButton.BorderSizePixel = 0
+minimizeButton.Text = "-"
+minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeButton.Font = Enum.Font.SourceSansBold
+minimizeButton.TextSize = 18
+minimizeButton.Parent = titleBar
+
+-- Основной контент
+local content = Instance.new("Frame")
+content.Size = UDim2.new(1, 0, 1, -25)
+content.Position = UDim2.new(0, 0, 0, 25)
+content.BackgroundTransparency = 1
+content.Name = "Content"
+content.Parent = frame
+
+local heightLabel = Instance.new("TextLabel")
+heightLabel.Size = UDim2.new(1, -10, 0, 20)
+heightLabel.Position = UDim2.new(0, 5, 0, 10)
+heightLabel.BackgroundTransparency = 1
+heightLabel.Text = "Высота: " .. teleportHeight
+heightLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+heightLabel.Font = Enum.Font.SourceSans
+heightLabel.TextSize = 16
+heightLabel.Parent = content
+
+local slider = Instance.new("Frame")
+slider.Size = UDim2.new(1, -10, 0, 20)
+slider.Position = UDim2.new(0, 5, 0, 35)
+slider.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+slider.BorderSizePixel = 0
+slider.Name = "Slider"
+slider.Parent = content
+
+local sliderFill = Instance.new("Frame")
+sliderFill.Size = UDim2.new(teleportHeight/maxHeight, 0, 1, 0)
+sliderFill.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+sliderFill.BorderSizePixel = 0
+sliderFill.Parent = slider
+
+local sliderHandle = Instance.new("TextButton")
+sliderHandle.Size = UDim2.new(0, 10, 1, 0)
+sliderHandle.Position = UDim2.new(teleportHeight/maxHeight, -5, 0, 0)
+sliderHandle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+sliderHandle.BorderSizePixel = 0
+sliderHandle.Text = ""
+sliderHandle.ZIndex = 2
+sliderHandle.Parent = slider
+
+local keybindLabel = Instance.new("TextLabel")
+keybindLabel.Size = UDim2.new(1, -10, 0, 20)
+keybindLabel.Position = UDim2.new(0, 5, 0, 65)
+keybindLabel.BackgroundTransparency = 1
+keybindLabel.Text = "Клавиша: " .. teleportKey.Name
+keybindLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+keybindLabel.Font = Enum.Font.SourceSans
+keybindLabel.TextSize = 16
+keybindLabel.Parent = content
+local changeKeyButton = Instance.new("TextButton")
+changeKeyButton.Size = UDim2.new(1, -10, 0, 30)
+changeKeyButton.Position = UDim2.new(0, 5, 0, 90)
+changeKeyButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+changeKeyButton.BorderSizePixel = 0
+changeKeyButton.Text = "Изменить клавишу"
+changeKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+changeKeyButton.Font = Enum.Font.SourceSans
+changeKeyButton.TextSize = 16
+changeKeyButton.Parent = content
+
+-- Функции
+local function updateHeight(value)
+    teleportHeight = math.floor(value * maxHeight) + 1
+    heightLabel.Text = "Высота: " .. teleportHeight
+    sliderFill.Size = UDim2.new(value, 0, 1, 0)
+    sliderHandle.Position = UDim2.new(value, -5, 0, 0)
+end
+
+local function connectSliderEvents()
+    local connection
+    local function updateSlider(input)
+        local x = (input.Position.X - slider.AbsolutePosition.X) / slider.AbsoluteSize.X
+        x = math.clamp(x, 0, 1)
+        updateHeight(x)
+    end
+
+    sliderHandle.MouseButton1Down:Connect(function()
+        connection = UIS.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement then
+                updateSlider(input)
+            end
+        end)
+    end)
+
+    UIS.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 and connection then
+            connection:Disconnect()
+            connection = nil
+        end
+    end)
+end
+
+local function toggleGUI(visible)
+    guiVisible = visible
+    content.Visible = visible
+    frame.Size = visible and UDim2.new(0, 280, 0, 200) or UDim2.new(0, 280, 0, 25)
+end
+
+-- Обработчики событий
+local teleportConnection
+local keyChangeConnection
+
+local function activateScript()
+    if not scriptActive then return end
+    
+    -- Подключение телепортации
+    teleportConnection = UIS.InputBegan:Connect(function(input, gameProcessed)
+        if not scriptActive then return end
+        if input.KeyCode == teleportKey and not gameProcessed then
+            local character = Player.Character
+            if character then
+                local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                if humanoidRootPart then
+                    humanoidRootPart.CFrame = humanoidRootPart.CFrame + Vector3.new(0, teleportHeight, 0)
+                end
+            end
+        elseif input.KeyCode == toggleKey and not gameProcessed then
+            toggleGUI(true)
+        end
+    end)
+end
+
+local function deactivateScript()
+    scriptActive = false
+    if teleportConnection then
+        teleportConnection:Disconnect()
+    end
+    if keyChangeConnection then
+        keyChangeConnection:Disconnect()
+    end
+end
+
+closeButton.MouseButton1Click:Connect(function()
+    deactivateScript()
+    screenGui:Destroy()
+end)
+
+minimizeButton.MouseButton1Click:Connect(function()
+    toggleGUI(not guiVisible)
+end)
+
+changeKeyButton.MouseButton1Click:Connect(function()
+    changeKeyButton.Text = "Нажмите клавишу..."
+    changeKeyButton.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+    
+    keyChangeConnection = UIS.InputBegan:Connect(function(input, gameProcessed)
+        if not gameProcessed and input.UserInputType == Enum.UserInputType.Keyboard then
+            teleportKey = input.KeyCode
+            keybindLabel.Text = "Клавиша: " .. teleportKey.Name
+            changeKeyButton.Text = "Изменить клавишу"
+            changeKeyButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+            keyChangeConnection:Disconnect()
+        end
+    end)
+end)
+
+-- Инициализация
+connectSliderEvents()
+updateHeight(teleportHeight/maxHeight)
+activateScript()
